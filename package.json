@@ -1,0 +1,20 @@
+{
+  "name": "twitter_bot",
+  "version": "1.0.0",
+  "description": "a bot designed to tweet particular content at specified intervals",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "twitter",
+    "bot"
+  ],
+  "author": "Ekene Umeh",
+  "license": "ISC",
+  "dependencies": {
+    "cron": "^2.1.0",
+    "pdf-parse": "^1.1.1",
+    "twitter-api-v2": "^1.12.10"
+  }
+}
