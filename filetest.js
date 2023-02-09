@@ -1,64 +1,50 @@
-var fs = require('fs')
-const pdf = require('pdf-parse')
-// const pdf = require("./public/doc/")
-
-// reader = fs.createReadStream('New_Document.txt', 'utf-8')
-
-// reader.on('data', function(chunk) {
-//     console.log(chunk.toString())
-// });
-
-// const getPdf = async(file) => {
-//     let readFileSync = fs.readFileSync(file)
-//   try {
-//     let pdfExtract = await pdf(readFileSync)
-//     let content = pdfExtract.text
-    
-//     // let pages=content.split("\n")
-//     // pages.forEach((e, i)=>{
-//     //   console.log(i)
-//     // })
-    
-//     console.log(content)
-//     console.log('Total pages: ', pdfExtract.numpages)
-//     console.log('All content: ', pdfExtract.info)
-//   } catch (error) {
-//     console.log(error)
-//   }
-// }
-
-// const pdfread = './The_Daily_Stoic_366.pdf'
-// getPdf(pdfread)
-
-function render_page(pageData) {
-  //check documents https://mozilla.github.io/pdf.js/
-  let render_options = {
-      //replaces all occurrences of whitespace with standard spaces (0x20). The default value is `false`.
-      normalizeWhitespace: false,
-      //do not attempt to combine same line TextItem's. The default value is `false`.
-      disableCombineTextItems: false
-  }
-
-  return pageData.getTextContent(render_options)
-  .then(function(textContent) {
-      let lastY= '';
-      let text=[]
-      for (let item of textContent.items) {
-       text.push(item)
+import fs from "fs";
+import PDFParser from "pdf2json";
+import pdfLibjs from "pdfjs-dist/legacy/build/pdf.js";
+const loadingTask = pdfLibjs.getDocument(
+  "./public/doc/The_Daily_Stoic_366.pdf"
+);
+loadingTask.promise
+  .then(function (doc) {
+    const numPages = doc.numPages;
+    console.log("# Document Loaded");
+    console.log("Number of Pages: " + numPages);
+    console.log();
+    let lastPromise; // will be used to chain promises
+    lastPromise = doc.getMetadata().then(function (data) {
+      console.log("# Metadata Is Loaded");
+      console.log("## Info");
+      console.log(JSON.stringify(data.info, null, 2));
+      console.log();
+      if (data.metadata) {
+        console.log("## Metadata");
+        console.log(JSON.stringify(data.metadata.getAll(), null, 2));
+        console.log();
       }
-      return text;
-  });
-}
+    });
 
-let options = {
-  pagerender: render_page
-}
+    const loadPage = async function (pageNum) {
+      let page = await doc.getPage(pageNum);
+      let content = await page.getTextContent();
 
-let dataBuffer = fs.readFileSync('./public/doc/The_Daily_Stoic_366.pdf');
+      const strings = content.items.map(function (item) {
+        return item.str;
+      });
+      return strings.join(" ");
+    };
 
-pdf(dataBuffer,options).then(function(data) {
-  //use new format
-  console.log(data)
-});
-
-
+    for (let i = 1; i <= numPages; i++) {
+      loadPage(i).then((d) => {
+        console.log(d);
+        console.log("page " + i);
+      });
+    }
+  })
+  .then(
+    function () {
+      console.log("# End of Document");
+    },
+    function (err) {
+      console.error("Error: " + err);
+    }
+  );
