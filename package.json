@@ -13,8 +13,17 @@
   "author": "Ekene Umeh",
   "license": "ISC",
   "dependencies": {
+    "@pdftron/pdfnet-node": "^9.4.2",
+    "babel-preset-react-app": "^10.0.1",
+    "babel-runtime": "^6.26.0",
+    "bereich": "^1.0.0",
     "cron": "^2.1.0",
+    "pdf-lib": "^1.17.1",
     "pdf-parse": "^1.1.1",
+    "pdf2json": "^2.0.2",
+    "pdfjs": "^2.4.7",
+    "pdfjs-dist": "^3.3.122",
     "twitter-api-v2": "^1.12.10"
-  }
+  },
+  "type": "module"
 }
