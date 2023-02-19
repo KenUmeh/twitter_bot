@@ -1,6 +1,8 @@
 const rwClient = require("./twitterClient")
 const cronJob = require("cron").CronJob
-console.log(cronJob)
+const content = require("./filetest")
+
+console.log("the tweet content", content)
 
 const tweet = async() => {
     try {
