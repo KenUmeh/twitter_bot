@@ -5,7 +5,7 @@ const cronJob = require("cron").CronJob
 const pdfLibjs = require("pdfjs-dist/legacy/build/pdf.js");
 const moment = require("moment");
 
-const job1 = new cronJob("00 9 * * *", () => {
+const job1 = new cronJob("58 8 * * *", () => {
 
 
 const loadingTask = pdfLibjs.getDocument(
@@ -41,7 +41,7 @@ pdfProcess()
   .then((r) => {
     console.log('tweet content  ', r);
     console.log('tweet length  ', r.length);
-    const job = new cronJob("55 8 * * *", () => {
+    const job = new cronJob("00 9 * * *", () => {
         console.log("test cron job")
         tweet(r)
         r = ""
