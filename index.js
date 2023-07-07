@@ -64,8 +64,8 @@ const tweet = async(str) => {
             }
             result.push(chunk);
           }
-          // console.log(result)
-          // console.log("number of chunks", result.length)
+          console.log(result)
+          console.log("number of chunks", result.length)
           let l = result.length
           var tID 
           for (let i = 0; i < l; i++){
