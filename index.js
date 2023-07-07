@@ -1,8 +1,12 @@
+require('dotenv').config()
 const rwClient = require("./twitterClient")
 const cronJob = require("cron").CronJob
 
 const pdfLibjs = require("pdfjs-dist/legacy/build/pdf.js");
 const moment = require("moment");
+
+const job1 = new cronJob("00 9 * * *", () => {
+
 
 const loadingTask = pdfLibjs.getDocument(
   "./public/doc/The_Daily_Stoic_366.pdf"
@@ -10,7 +14,6 @@ const loadingTask = pdfLibjs.getDocument(
 var d = moment();
 var date = d.format("MMMM Do");
 console.log("this is today's date", date);
-
 // var tweetContent;
 
 const loadPage = async function (pageNum, doc) {
@@ -19,7 +22,7 @@ const loadPage = async function (pageNum, doc) {
   const strings = content.items.map(function (item) {
     return item.str;
   });
-  return strings.join(" ");
+  return strings.join(" ");   
 };
 const pdfProcess = async () => {
   
@@ -33,17 +36,15 @@ const pdfProcess = async () => {
   }
 };
 
-//this is a promise until you can call it in an async function with an await which will
-// resolve the promise authomatically else you will get null since javascript is compiled
-// synchronously unless you take your remote and be in charge.
+
 pdfProcess()
   .then((r) => {
     console.log('tweet content  ', r);
     console.log('tweet length  ', r.length);
-    const job = new cronJob("* * * * *", () => {
+    const job = new cronJob("55 8 * * *", () => {
         console.log("test cron job")
         tweet(r)
-    
+        r = ""
     })
      job.start();
   })
@@ -53,16 +54,8 @@ pdfProcess()
 
 const tweet = async(str) => {
     try {
-            //  let snd = 'stand with the philosopher, or else with the mob!”   — E PICTETUS,   D ISCOURSES , 3.15.13  e’re all complicated people. We have multiple sides to ourselves—conflicting wants, desires, and fears. The outside world is no less confusing and contradictory. If we’re not careful, all '
-            // let id = '1631563811046948864'
-            // let id_str= '883993107171356673'
-            // let resp = await rwClient.v1.tweet(snd)
-              // let resp = await rwClient.v1.reply(snd, id)
-            //  console.log(resp)
-
-
           const chunkSize = 280; // set the maximum size of each chunk
-          const result = [];
+          let result = [];
           
           for (let i = 0; i < str.length; i += chunkSize) {
             const chunk = str.slice(i, i + chunkSize); // slice the string into chunks
@@ -71,24 +64,27 @@ const tweet = async(str) => {
             }
             result.push(chunk);
           }
-          console.log(result)
-          console.log("number of chunks", result.length)
+          // console.log(result)
+          // console.log("number of chunks", result.length)
           let l = result.length
           var tID 
           for (let i = 0; i < l; i++){
              if(i === 0){
-              console.log('first tweet content', result[i])
+              // console.log('first tweet content', result[i])
               let resp = await rwClient.v1.tweet(result[i])
-             console.log("first tweet response", resp)
+            //  console.log("first tweet response", resp)
                tID = resp.id_str
              }else{
-              console.log('response tweet', i)
+              // console.log('response tweet', i)
              let resp = await rwClient.v1.reply(result[i], tID)
-             console.log('response tweet', resp)
+            //  console.log('response tweet', resp)
               tID = resp.id_str
              }
 
           }
+          result = []
+          // result.length = 0;
+          console.log("emptied result", result)
           return result;
 
         
@@ -96,5 +92,8 @@ const tweet = async(str) => {
         console.log(e)
     }
 }
+})
+
+job1.start();
 
 // tweet()

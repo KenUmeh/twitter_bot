@@ -1,16 +1,15 @@
+require('dotenv').config()
 const twitterApi = require("twitter-api-v2").default
 
 //console.log(twitterApi)
 
 const client = new twitterApi({
-    appKey: CONSUMER_KEY,
-    appSecret: CONSUMER_SECRET,
-    accessToken: "883993107171356673-WSxTBo7aTM2jQBrArTypz6o4JJKsxtZ",
-    accessSecret: "5RepuMLBjbstuKNI6tqB6l9tbdUncVas1Ru6GKYK0G20x"
+    appKey: process.env.appKey,
+    appSecret: process.env.appSecret,
+    accessToken: process.env.accessToken,
+    accessSecret: process.env.accessSecret
 })
 
-// appKey: "euGvYNutOr3zrl391tbZ2EMfd",
-// appSecret: "HOdKUt0oCOalJVaxdyV6ElHVncrHpeiLZ0NFOhfu9ayaxts5QC",
 
 
 const rwClient = client.readWrite
